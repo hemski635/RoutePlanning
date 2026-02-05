@@ -116,7 +116,7 @@ Local Services (Docker):
 ### 1. Clone and Setup Environment
 
 ```bash
-git clone <repo-url> routeplanning
+git clone https://github.com/hemski635/RoutePlanning
 cd routeplanning
 
 # Create virtual environment
