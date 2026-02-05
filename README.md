@@ -58,8 +58,12 @@ python main_local.py
 
 - Python 3.11+
 - Docker & Docker Compose
-- ~2GB disk space for routing data
-- GitHub account (for API access)
+- **~10GB disk space** for data:
+  - BRouter segments: ~250MB (Baltic states)
+  - OSM data: ~1.5GB (Baltic states PBF + BZ2)
+  - Overpass database: ~6GB (generated from OSM)
+- For **Local LLM mode**: Additional ~5GB for Ollama + Qwen 2.5 7B model
+- **Optional**: GitHub account (only for cloud API mode)
 
 ### 1. Clone and Setup Environment
 
