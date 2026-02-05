@@ -1,0 +1,26 @@
+# Microsoft Agent Framework (preview)
+agent-framework-azure-ai --pre
+
+# Async HTTP client
+httpx>=0.27.0
+aiohttp>=3.9.0
+
+# Data validation
+pydantic>=2.0.0
+
+# GPX file handling
+gpxpy>=1.6.0
+
+# Geospatial calculations
+geopy>=2.4.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# CLI interface
+rich>=13.0.0
+typer>=0.12.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0

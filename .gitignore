@@ -1,0 +1,62 @@
+# Environment
+.env
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Output files
+output/
+*.gpx
+*.kml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Downloaded data - do NOT track (large files, user downloads)
+brouter-data/
+osm-data/
+overpass-data/
+
+# Cloned repos - do NOT track (clone separately)
+brouter-web/
+
+# Ollama models (if cached locally)
+.ollama/
+
+# Logs
+*.log
+logs/

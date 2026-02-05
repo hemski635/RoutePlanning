@@ -1,0 +1,46 @@
+services:
+  brouter:
+    image: ghcr.io/abrensch/brouter:latest
+    container_name: brouter
+    ports:
+      - "17777:17777"
+    volumes:
+      # Segment data files (required - download from brouter.de/brouter/segments4/)
+      - ./brouter-data/segments4:/segments4
+      # Custom routing profiles (optional)
+      - ./brouter-data/profiles2:/profiles2
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:17777/brouter?lonlats=11.5820,48.1351|11.5900,48.1400&profile=trekking&format=geojson"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  overpass:
+    image: wiktorn/overpass-api:latest
+    container_name: overpass
+    ports:
+      - "12345:80"
+    volumes:
+      - ./overpass-data:/db
+      - ./osm-data/baltic-states.osm.bz2:/data/planet.osm.bz2:ro
+    environment:
+      OVERPASS_META: "yes"
+      OVERPASS_MODE: "init"
+      OVERPASS_PLANET_URL: "file:///data/planet.osm.bz2"
+      OVERPASS_RULES_LOAD: "10"
+    restart: unless-stopped
+
+  brouter-web:
+    build:
+      context: ./brouter-web
+      dockerfile: Dockerfile
+    container_name: brouter-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./brouter-web/config.js:/usr/share/nginx/html/config.js:ro
+      - ./brouter-web/keys.js:/usr/share/nginx/html/keys.js:ro
+    depends_on:
+      - brouter
+    restart: unless-stopped
