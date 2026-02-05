@@ -8,8 +8,15 @@ from math import radians, sin, cos, sqrt, atan2
 
 import httpx
 
-# Use local Overpass API (Docker) or fallback to public
-OVERPASS_URL = os.environ.get("OVERPASS_URL", "http://localhost:12345/api/interpreter")
+# Overpass API configuration
+# Use local instance by default, or public Overpass API if USE_PUBLIC_SERVICES=true
+USE_PUBLIC_SERVICES = os.getenv("USE_PUBLIC_SERVICES", "false").lower() == "true"
+
+if USE_PUBLIC_SERVICES:
+    # Public Overpass instances (with rate limits)
+    OVERPASS_URL = os.getenv("OVERPASS_URL", "https://overpass-api.de/api/interpreter")
+else:
+    OVERPASS_URL = os.getenv("OVERPASS_URL", "http://localhost:12345/api/interpreter")
 
 # Minimum forest area in hectares for wild camping consideration
 MIN_FOREST_AREA_HA = 20  # At least 20 hectares (~450m x 450m) for reasonable wild camping

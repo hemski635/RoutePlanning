@@ -35,27 +35,75 @@ python main_local.py
 | Cloud | GPT-4.1 | Fast | No | Yes |
 | Local | Qwen 2.5 7B | Medium | Yes | Simple only |
 
+## Infrastructure Options
+
+### Option A: Public Services (Zero Setup) ⭐ Easy Start
+
+Use public BRouter, brouter-web, and Overpass API instances. No local setup required!
+
+**Pros:** No Docker, no downloads, instant start  
+**Cons:** Rate limits apply, requires internet, may be slower
+
+```bash
+# In .env, set:
+USE_PUBLIC_SERVICES=true
+```
+
+Then just run:
+```bash
+python main_local.py "Plan a route from Riga to Tallinn"
+```
+
+### Option B: Self-Hosted Services (Recommended for heavy use)
+
+Run your own BRouter and Overpass instances for unlimited queries and offline capability.
+
+**Pros:** Fast, no rate limits, works offline, full data control  
+**Cons:** Requires ~10GB disk space and initial setup
+
+```bash
+# In .env, set:
+USE_PUBLIC_SERVICES=false
+```
+
+See [Setup Local Services](#3-download-routing-data) section below.
+
 ## Architecture
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │   AI Agent      │────▶│    BRouter      │────▶│  Routing Data   │
-│  (Local/Cloud)  │     │  (localhost:    │     │   (segments4)   │
-│                 │     │     17777)      │     │                 │
+│  (Local/Cloud)  │     │ (local/public)  │     │   (segments4)   │
+│                 │     │                 │     │                 │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
         │
         ▼
 ┌─────────────────┐     ┌─────────────────┐
 │  Overpass API   │────▶│    OSM Data     │
-│  (localhost:    │     │  (Baltic States)│
-│     12345)      │     │                 │
+│ (local/public)  │     │  (POI queries)  │
+│                 │     │                 │
 └─────────────────┘     └─────────────────┘
+
+Public Services:
+- BRouter: https://brouter.de/brouter
+- brouter-web: https://brouter.de/brouter-web  
+- Overpass: https://overpass-api.de/api/interpreter
+
+Local Services (Docker):
+- BRouter: http://localhost:17777
+- brouter-web: http://localhost:8080
+- Overpass: http://localhost:12345
 ```
 
 ## Quick Start
 
 ### Prerequisites
 
+**Minimal setup (public services):**
+- Python 3.11+
+- Internet connection
+
+**Full local setup (self-hosted services):**
 - Python 3.11+
 - Docker & Docker Compose
 - **~10GB disk space** for data:

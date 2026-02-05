@@ -9,9 +9,16 @@ from urllib.parse import quote
 
 import httpx
 
-BROUTER_BASE_URL = os.getenv("BROUTER_URL", "http://localhost:17777")
-# Self-hosted brouter-web instance
-BROUTER_WEB_URL = os.getenv("BROUTER_WEB_URL", "http://localhost:8080")
+# Configuration for BRouter services
+# Use local instance by default, or public brouter.de if USE_PUBLIC_SERVICES=true
+USE_PUBLIC_SERVICES = os.getenv("USE_PUBLIC_SERVICES", "false").lower() == "true"
+
+if USE_PUBLIC_SERVICES:
+    BROUTER_BASE_URL = os.getenv("BROUTER_URL", "https://brouter.de/brouter")
+    BROUTER_WEB_URL = os.getenv("BROUTER_WEB_URL", "https://brouter.de/brouter-web")
+else:
+    BROUTER_BASE_URL = os.getenv("BROUTER_URL", "http://localhost:17777/brouter")
+    BROUTER_WEB_URL = os.getenv("BROUTER_WEB_URL", "http://localhost:8080")
 
 
 def generate_brouter_web_url(

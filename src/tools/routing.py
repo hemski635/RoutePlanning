@@ -1,4 +1,4 @@
-"""Routing tools using BRouter (self-hosted) or OpenRouteService as fallback."""
+"""Routing tools using BRouter (self-hosted or public) or OpenRouteService as fallback."""
 
 import os
 import json
@@ -6,8 +6,14 @@ from typing import Annotated
 
 import httpx
 
-# BRouter configuration (Docker container)
-BROUTER_BASE_URL = os.getenv("BROUTER_URL", "http://localhost:17777")
+# BRouter configuration
+# Use local instance by default, or public brouter.de if USE_PUBLIC_SERVICES=true
+USE_PUBLIC_SERVICES = os.getenv("USE_PUBLIC_SERVICES", "false").lower() == "true"
+
+if USE_PUBLIC_SERVICES:
+    BROUTER_BASE_URL = os.getenv("BROUTER_URL", "https://brouter.de/brouter")
+else:
+    BROUTER_BASE_URL = os.getenv("BROUTER_URL", "http://localhost:17777/brouter")
 
 # OpenRouteService as fallback
 ORS_BASE_URL = "https://api.openrouteservice.org"
@@ -44,11 +50,11 @@ async def _check_brouter_available() -> bool:
             # Just check if the server responds - any response means it's running
             # We use a request that will fail fast but confirms the server is there
             response = await client.get(
-                f"{BROUTER_BASE_URL}/brouter",
-                params={"lonlats": "0,0", "profile": "trekking", "format": "geojson"},
-                timeout=5.0,
+                BROUTER_BASE_URL,
+                params={"lonlats": "0,0|0.1,0.1", "profile": "trekking", "alternativeidx": 0, "format": "geojson"},
+                timeout=10.0,
             )
-            # Any response (even 400 error) means server is running
+            # Any response (even 400/500 error) means server is running
             return True
     except httpx.ConnectError:
         return False
@@ -150,7 +156,7 @@ async def _calculate_route_brouter(
     
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{BROUTER_BASE_URL}/brouter",
+            BROUTER_BASE_URL,
             params={
                 "lonlats": lonlats,
                 "profile": profile,
@@ -300,7 +306,7 @@ async def calculate_route_with_waypoints(
     
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{BROUTER_BASE_URL}/brouter",
+            BROUTER_BASE_URL,
             params={
                 "lonlats": lonlats,
                 "profile": profile,
@@ -397,7 +403,7 @@ async def get_alternative_routes(
         for idx in range(min(num_alternatives + 1, 4)):  # Max 4 alternatives (0-3)
             try:
                 response = await client.get(
-                    f"{BROUTER_BASE_URL}/brouter",
+                    BROUTER_BASE_URL,
                     params={
                         "lonlats": lonlats,
                         "profile": "trekking",
